@@ -1,8 +1,11 @@
 LittlerootTown_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, LittlerootTown_OnTransition
-	map_script MAP_SCRIPT_ON_FRAME_TABLE, LittlerootTown_OnFrame
-	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, LittlerootTown_OnWarp
+	map_script MAP_SCRIPT_ON_FRAME_TABLE, LittlerootTown_MapScripts_MAP_SCRIPT_ON_FRAME_TABLE
 	.byte 0
+
+LittlerootTown_MapScripts_MAP_SCRIPT_ON_FRAME_TABLE:
+	map_script_2 VAR_LITTLEROOT_INTRO_STATE, 1, LittlerootTown_EventScript_StepOffTruck
+	.2byte 0
 
 
 LittlerootTown_OnTransition::
@@ -12,17 +15,18 @@ LittlerootTown_OnTransition::
 
 
 LittlerootTown_OnFrame::
+	map_script_2
 	call LittlerootTown_EventScript_StepOffTruck
 	return
 
 
 LittlerootTown_EventScript_StepOffTruck::
 	lockall
-	setvar VAR_0x8004, 5
-	setvar VAR_0x8005, 8
+	delay 15
+	playse SE_LEDGE
 	applymovement OBJ_EVENT_ID_PLAYER, LittlerootTown_Movement_PlayerStepOffTruck
-	setflag FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_TRUCK
-	setflag FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_TRUCK
+	waitmovement 0
+	setvar VAR_LITTLEROOT_INTRO_STATE, 2
 	releaseall
 	return
 
