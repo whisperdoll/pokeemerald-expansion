@@ -1,0 +1,72 @@
+const LOCALID_ATTENDANT_SINGLES = 1
+
+mapscripts LittlerootTown_ProfessorBirchsLab_MapScripts {
+}
+
+script LittlerootTown_ProfessorBirchsLab_EventScript_SinglesAttendant {
+    lock
+	faceplayer
+    message(format("Do you want to do the singles?"))
+    waitmessage
+	multichoice(17, 6, MULTI_CHALLENGEINFO, FALSE)
+    closemessage
+    switch(var(VAR_RESULT)) {
+        case 0:
+            call(LittlerootTown_ProfessorBirchsLab_TryEnterSinglesChallenge)
+        case 1:
+            call(LittlerootTown_ProfessorBirchsLab_ExplainSinglesChallenge)
+        case 2:
+        case MULTI_B_PRESSED:
+            call(LittlerootTown_ProfessorBirchsLab_CancelChallenge)
+    }
+}
+
+script LittlerootTown_ProfessorBirchsLab_TryEnterSinglesChallenge {
+	setflag(FLAG_SYS_POKEMON_GET)
+	setflag(FLAG_RESCUED_BIRCH)
+	fadescreen(FADE_TO_BLACK)
+	special(ChooseStarter)
+	waitstate
+	fadescreen(FADE_FROM_BLACK)
+
+	applymovement(LOCALID_ATTENDANT_SINGLES, LittlerootTown_ProfessorBirchsLab_Movement_WalkToElevator)
+	applymovement(OBJ_EVENT_ID_PLAYER, LittlerootTown_ProfessorBirchsLab_Movement_WalkToElevator)
+	waitmovement(0)
+	opendoor(12, 1)
+	waitdooranim
+	applymovement(LOCALID_ATTENDANT_SINGLES, LittlerootTown_ProfessorBirchsLab_Movement_AttendantEnterElevator)
+	applymovement(OBJ_EVENT_ID_PLAYER, LittlerootTown_ProfessorBirchsLab_Movement_PlayerEnterElevator)
+	waitmovement(0)
+	closedoor(12, 1)
+	waitdooranim
+
+	warp(MAP_BATTLE_FRONTIER_BATTLE_TOWER_ELEVATOR, 255, 1, 6)
+	waitstate
+}
+
+script LittlerootTown_ProfessorBirchsLab_CancelChallenge {
+	msgbox(format("Ok sorry"))
+	release
+}
+
+script LittlerootTown_ProfessorBirchsLab_ExplainSinglesChallenge {
+    msgbox(format("Later"))
+    release
+}
+
+movement LittlerootTown_ProfessorBirchsLab_Movement_WalkToElevator {
+	walk_up * 3
+	step_end
+}
+
+movement LittlerootTown_ProfessorBirchsLab_Movement_AttendantEnterElevator {
+	walk_up
+	set_invisible
+	step_end
+}
+
+movement LittlerootTown_ProfessorBirchsLab_Movement_PlayerEnterElevator {
+	walk_up * 2
+	set_invisible
+	step_end
+}
